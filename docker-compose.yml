@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # container_name: slim_app  # เพิ่ม container_name ถ้าต้องการ
+    volumes:
+      - ./backend:/var/www
+    networks:
+      - slim_network
+
+  nginx:
+    image: nginx:alpine
+    # container_name: slim_nginx  # เพิ่ม container_name ถ้าต้องการ
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www  # เพิ่มกลับมาเพื่อให้ Nginx เห็นไฟล์
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - backend
+    networks:
+      - slim_network
+
+networks:
+  slim_network:
+    driver: bridge
