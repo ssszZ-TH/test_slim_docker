@@ -9,6 +9,19 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
+// ทำ body parser ใช้เอง เพื่อความสดวก
+$app->add(function (Request $request, $handler) {
+    $contentType = $request->getHeaderLine('Content-Type');
+    if (stripos($contentType, 'application/json') !== false) {
+        $rawBody = $request->getBody()->getContents();
+        $parsedBody = json_decode($rawBody, true);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            $request = $request->withParsedBody($parsedBody);
+        }
+    }
+    return $handler->handle($request);
+});
+
 // test
 $app->get('/test', function (Request $request, Response $response): Response {
     $test = ['message' => 'spa use slim framework'];
@@ -17,11 +30,11 @@ $app->get('/test', function (Request $request, Response $response): Response {
 });
 
 // Routes สำหรับ User
-$app->get('/user', [UserController::class, 'list']);
-$app->get('/user/{id}', [UserController::class, 'get']);
-$app->post('/user', [UserController::class, 'create']);
-$app->put('/user/{id}', [UserController::class, 'update']);
-$app->delete('/user/{id}', [UserController::class, 'delete']);
+$app->get('/users', [UserController::class, 'list']);
+$app->get('/users/{id}', [UserController::class, 'get']);
+$app->post('/users', [UserController::class, 'create']);
+$app->put('/users/{id}', [UserController::class, 'update']);
+$app->delete('/users/{id}', [UserController::class, 'delete']);
 
 // // Routes สำหรับ Product
 // $app->get('/products', [ProductController::class, 'list']);
