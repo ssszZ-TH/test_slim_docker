@@ -9,6 +9,13 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
+// test
+$app->get('/test', function (Request $request, Response $response): Response {
+    $test = ['message' => 'spa use slim framework'];
+    $response->getBody()->write(json_encode($test));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 // Routes สำหรับ User
 $app->get('/user', [UserController::class, 'list']);
 $app->get('/user/{id}', [UserController::class, 'get']);
