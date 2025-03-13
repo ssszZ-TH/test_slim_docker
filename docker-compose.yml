@@ -24,6 +24,20 @@ services:
     networks:
       - slim_network
 
+  db:
+      image: postgres:16
+      volumes:
+        - ./db-data:/var/lib/postgresql/data
+        - ./staticData:/staticData  # เพิ่ม Mount โฟลเดอร์ data
+      environment:
+        POSTGRES_DB: myapp
+        POSTGRES_USER: spa
+        POSTGRES_PASSWORD: spa
+      networks:
+        - slim_network
+      ports:
+        - "5432:5432"
+
 networks:
   slim_network:
     driver: bridge
